@@ -4,8 +4,10 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="eVNIa4" name="pan">
     <GROUP id="{1898ABC0-52EE-CB55-7F91-06F2544753C7}" name="Source">
+      <FILE id="K6Cu6O" name="hrir.h" compile="0" resource="0" file="Source/hrir.h"/>
+      <FILE id="YnGS3y" name="hrir.cpp" compile="1" resource="0" file="Source/hrir.cpp"/>
       <FILE id="Ga4QjB" name="geometry.h" compile="0" resource="0" file="Source/geometry.h"/>
-      <FILE id="mgpuez" name="pan_room.cpp" compile="1" resource="0" file="Source/pan_room.cpp"/>
+      <FILE id="mgpuez" name="pan.cpp" compile="1" resource="0" file="Source/pan.cpp"/>
       <FILE id="eBlrut" name="pan.h" compile="0" resource="0" file="Source/pan.h"/>
       <FILE id="UGZ5Ta" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
@@ -36,6 +38,7 @@
         <MODULEPATH id="juce_graphics" path="../../Applications/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../Applications/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../Applications/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -49,6 +52,7 @@
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

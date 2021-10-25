@@ -11,10 +11,10 @@
 
 //==============================================================================
 PanAudioProcessorEditor::PanAudioProcessorEditor (PanAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), _panRoom(p._panRoom)
+    : AudioProcessorEditor (&p), audioProcessor (p), _panner(p._panner)
 {
     setSize (800, 600);
-    addAndMakeVisible(_panRoom);
+    addAndMakeVisible(_panner.room);
 }
 
 PanAudioProcessorEditor::~PanAudioProcessorEditor()
@@ -33,6 +33,6 @@ void PanAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     juce::FlexBox flexBox;
-    flexBox.items.add(juce::FlexItem(_panRoom).withFlex(1.0));
+    flexBox.items.add(juce::FlexItem(_panner.room).withFlex(1.0));
     flexBox.performLayout(getLocalBounds().reduced(50));
 }
