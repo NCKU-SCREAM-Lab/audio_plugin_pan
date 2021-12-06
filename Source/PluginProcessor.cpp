@@ -8,6 +8,9 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "PanProcessor.h"
+
+using AudioGraphIOProcessor = juce::AudioProcessorGraph::AudioGraphIOProcessor;
 
 //==============================================================================
 PanAudioProcessor::PanAudioProcessor()
@@ -21,8 +24,13 @@ PanAudioProcessor::PanAudioProcessor()
                      #endif
                        ),
 #endif
-    _panner(MAX_SOURCE_NUM, 10, 10)
+    _mainProcessor(new juce::AudioProcessorGraph())
 {
+}
+
+PanProcessor* PanAudioProcessor::pan()
+{
+    return (PanProcessor*)_panNode->getProcessor();
 }
 
 PanAudioProcessor::~PanAudioProcessor() {}
@@ -94,13 +102,51 @@ void PanAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    _panner.prepareToPlay(sampleRate, samplesPerBlock);
+    _mainProcessor->setPlayConfigDetails(getMainBusNumInputChannels(),
+                                         getMainBusNumOutputChannels(),
+                                         sampleRate, samplesPerBlock);
+    _mainProcessor->prepareToPlay(sampleRate, samplesPerBlock);
+    initializeGraph();
+}
+
+void PanAudioProcessor::initializeGraph()
+{
+    _mainProcessor->clear();
+    
+    _audioInputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::audioInputNode));
+    _audioOutputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::audioOutputNode));
+    _midiInputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::midiInputNode));
+    _midiOutputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::midiOutputNode));
+    _panNode = _mainProcessor->addNode(std::make_unique<PanProcessor>());
+    
+    connectAudioNodes();
+    connectMidiNodes();
+}
+
+void PanAudioProcessor::connectAudioNodes()
+{
+    for (int channel = 0; channel < 2; ++channel) {
+        _mainProcessor->addConnection({
+            {_audioInputNode->nodeID, channel},
+            {_panNode->nodeID, channel}});
+        _mainProcessor->addConnection({
+            {_panNode->nodeID, channel},
+            {_audioOutputNode->nodeID, channel}});
+    }
+}
+
+void PanAudioProcessor::connectMidiNodes()
+{
+    _mainProcessor->addConnection ({
+        {_midiInputNode->nodeID, juce::AudioProcessorGraph::midiChannelIndex},
+        {_midiOutputNode->nodeID, juce::AudioProcessorGraph::midiChannelIndex}});
 }
 
 void PanAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+    _mainProcessor->releaseResources();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -150,8 +196,13 @@ void PanAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-    _panner.processBlock(buffer);
-//    _panner.updateFilter();
+    updateGraph();
+    _mainProcessor->processBlock(buffer, midiMessages);
+}
+
+void PanAudioProcessor::updateGraph()
+{
+    
 }
 
 //==============================================================================

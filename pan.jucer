@@ -4,6 +4,10 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="eVNIa4" name="pan">
     <GROUP id="{1898ABC0-52EE-CB55-7F91-06F2544753C7}" name="Source">
+      <FILE id="pYqdz6" name="PanProcessor.cpp" compile="1" resource="0"
+            file="Source/PanProcessor.cpp"/>
+      <FILE id="PIWc1r" name="PanProcessor.h" compile="0" resource="0" file="Source/PanProcessor.h"/>
+      <FILE id="b7AJY8" name="ProcessorBase.h" compile="0" resource="0" file="Source/ProcessorBase.h"/>
       <FILE id="K6Cu6O" name="hrir.h" compile="0" resource="0" file="Source/hrir.h"/>
       <FILE id="YnGS3y" name="hrir.cpp" compile="1" resource="0" file="Source/hrir.cpp"/>
       <FILE id="Ga4QjB" name="geometry.h" compile="0" resource="0" file="Source/geometry.h"/>

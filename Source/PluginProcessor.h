@@ -9,7 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "pan.h"
+#include <memory>
+#include "PanProcessor.h"
 
 #define MAX_SOURCE_NUM 1
 
@@ -56,8 +57,20 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    pan::Panner _panner;
+    PanProcessor* pan();
 private:
+    std::unique_ptr<juce::AudioProcessorGraph> _mainProcessor;
+    juce::AudioProcessorGraph::Node::Ptr _audioInputNode;
+    juce::AudioProcessorGraph::Node::Ptr _audioOutputNode;
+    juce::AudioProcessorGraph::Node::Ptr _midiInputNode;
+    juce::AudioProcessorGraph::Node::Ptr _midiOutputNode;
+    juce::AudioProcessorGraph::Node::Ptr _panNode;
+
+    void initializeGraph();
+    void connectAudioNodes();
+    void connectMidiNodes();
+    void updateGraph();
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanAudioProcessor)
 };
