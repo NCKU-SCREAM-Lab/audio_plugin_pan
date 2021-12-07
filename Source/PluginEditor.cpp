@@ -11,10 +11,11 @@
 
 //==============================================================================
 PanAudioProcessorEditor::PanAudioProcessorEditor (PanAudioProcessor& p)
-    : AudioProcessorEditor(&p), _audioProcessor(p)//, _panner(NULL)
+    : AudioProcessorEditor(&p), _audioProcessor(p), _reverb(*(p.reverb()))//, _panner(NULL)
 {
-    setSize (800, 600);
+    setSize (1100, 700);
     addAndMakeVisible(p.pan()->_panner.room);
+    addAndMakeVisible(_reverb);
 }
 
 PanAudioProcessorEditor::~PanAudioProcessorEditor()
@@ -34,5 +35,6 @@ void PanAudioProcessorEditor::resized()
     // subcomponents in your editor..
     juce::FlexBox flexBox;
     flexBox.items.add(juce::FlexItem(_audioProcessor.pan()->_panner.room).withFlex(1.0));
+    flexBox.items.add(juce::FlexItem(_reverb).withFlex(0.6));
     flexBox.performLayout(getLocalBounds().reduced(50));
 }

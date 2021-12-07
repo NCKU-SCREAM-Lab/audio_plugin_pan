@@ -9,6 +9,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "PanProcessor.h"
+#include "LateReverbProcessor.h"
 
 using AudioGraphIOProcessor = juce::AudioProcessorGraph::AudioGraphIOProcessor;
 
@@ -31,6 +32,11 @@ PanAudioProcessor::PanAudioProcessor()
 PanProcessor* PanAudioProcessor::pan()
 {
     return (PanProcessor*)_panNode->getProcessor();
+}
+
+LateReverbProcessor* PanAudioProcessor::reverb()
+{
+    return (LateReverbProcessor*)_reverbNode->getProcessor();
 }
 
 PanAudioProcessor::~PanAudioProcessor() {}
@@ -118,6 +124,7 @@ void PanAudioProcessor::initializeGraph()
     _midiInputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::midiInputNode));
     _midiOutputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::midiOutputNode));
     _panNode = _mainProcessor->addNode(std::make_unique<PanProcessor>());
+    _reverbNode = _mainProcessor->addNode(std::make_unique<LateReverbProcessor>());
     
     connectAudioNodes();
     connectMidiNodes();
@@ -131,6 +138,9 @@ void PanAudioProcessor::connectAudioNodes()
             {_panNode->nodeID, channel}});
         _mainProcessor->addConnection({
             {_panNode->nodeID, channel},
+            {_reverbNode->nodeID, channel}});
+        _mainProcessor->addConnection({
+            {_reverbNode->nodeID, channel},
             {_audioOutputNode->nodeID, channel}});
     }
 }

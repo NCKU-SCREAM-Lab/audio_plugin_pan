@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include <memory>
 #include "PanProcessor.h"
+#include "LateReverbProcessor.h"
 
 #define MAX_SOURCE_NUM 1
 
@@ -58,6 +59,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     PanProcessor* pan();
+    LateReverbProcessor* reverb();
 private:
     std::unique_ptr<juce::AudioProcessorGraph> _mainProcessor;
     juce::AudioProcessorGraph::Node::Ptr _audioInputNode;
@@ -65,6 +67,7 @@ private:
     juce::AudioProcessorGraph::Node::Ptr _midiInputNode;
     juce::AudioProcessorGraph::Node::Ptr _midiOutputNode;
     juce::AudioProcessorGraph::Node::Ptr _panNode;
+    juce::AudioProcessorGraph::Node::Ptr _reverbNode;
 
     void initializeGraph();
     void connectAudioNodes();

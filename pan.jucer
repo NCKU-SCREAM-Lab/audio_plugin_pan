@@ -4,6 +4,17 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="eVNIa4" name="pan">
     <GROUP id="{1898ABC0-52EE-CB55-7F91-06F2544753C7}" name="Source">
+      <FILE id="fwMZU2" name="IIR.h" compile="0" resource="0" file="Source/IIR.h"/>
+      <FILE id="H5fopx" name="LateReverbEditor.cpp" compile="1" resource="0"
+            file="Source/LateReverbEditor.cpp"/>
+      <FILE id="h3kWR0" name="LateReverbEditor.h" compile="0" resource="0"
+            file="Source/LateReverbEditor.h"/>
+      <FILE id="FvPZTX" name="LateReverbProcessor.cpp" compile="1" resource="0"
+            file="Source/LateReverbProcessor.cpp"/>
+      <FILE id="AAXtDX" name="LateReverbProcessor.h" compile="0" resource="0"
+            file="Source/LateReverbProcessor.h"/>
+      <FILE id="hf4VIZ" name="Matrix.cpp" compile="1" resource="0" file="Source/Matrix.cpp"/>
+      <FILE id="RBospb" name="Matrix.h" compile="0" resource="0" file="Source/Matrix.h"/>
       <FILE id="pYqdz6" name="PanProcessor.cpp" compile="1" resource="0"
             file="Source/PanProcessor.cpp"/>
       <FILE id="PIWc1r" name="PanProcessor.h" compile="0" resource="0" file="Source/PanProcessor.h"/>
