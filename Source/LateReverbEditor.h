@@ -22,6 +22,7 @@
 #include <JuceHeader.h>
 #include "LateReverbProcessor.h"
 #include "PluginProcessor.h"
+#include <string>
 
 class RotarySlider : public juce::Slider {
 private:
@@ -30,7 +31,7 @@ private:
 public:
     juce::Label nameLabel;
 
-    RotarySlider(char* name);
+    RotarySlider(std::string name);
     RotarySlider() {};
     void resized() override;
 };

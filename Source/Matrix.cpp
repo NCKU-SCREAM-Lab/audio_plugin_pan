@@ -48,7 +48,7 @@ Matrix inverse(Matrix matrix)
 Matrix mult(Matrix& a, Matrix& b)
 {
 	int   i, j, k;
-	int r1 = a.nRow, c1 = a.nCol, r2 = b.nRow, c2 = b.nCol;
+	int r1 = a.nRow, c1 = a.nCol, /*r2 = b.nRow,*/ c2 = b.nCol;
 	Matrix mult = Matrix(r1, c2);
 
 	// Initializing elements of matrix mult to 0.

@@ -12,7 +12,7 @@
 //#include "PluginProcessor.h"
 
 
-RotarySlider::RotarySlider(char* varName) :nameLabel("nameLabel", varName) {
+RotarySlider::RotarySlider(std::string varName) :nameLabel("nameLabel", varName) {
     setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
 
     setTextBoxStyle(juce::Slider::TextBoxBelow,
@@ -34,8 +34,8 @@ void RotarySlider::resized() {
 
 //==============================================================================
 LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
-    : audioProcessor(p), channelSelector("channel : -1"), roomSize(""), roomShape( ""), decay( ""), damping( ""), modulationDepth(""),
-    impulseButton("impulse"), dryWet("")
+    : channelSelector("channel : -1"), dryWet(""), roomSize(""), roomShape( ""), decay( ""), damping( ""), modulationDepth(""),
+    impulseButton("impulse"), audioProcessor(p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
