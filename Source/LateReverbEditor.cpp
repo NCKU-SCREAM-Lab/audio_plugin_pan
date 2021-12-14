@@ -78,7 +78,7 @@ LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
     addAndMakeVisible(modulationDepth);
     modulationDepth.setRange(0, 1);
     modulationDepth.onValueChange = [this, &p]() {
-        modulationDepth.nameLabel.setText("mod depth : " + juce::String(this->modulationDepth.getValue()), juce::NotificationType::dontSendNotification);
+        modulationDepth.nameLabel.setText("allpass magnitude : " + juce::String(this->modulationDepth.getValue()), juce::NotificationType::dontSendNotification);
         p.reverb.SetModulationDepth(this->modulationDepth.getValue());
     };
     modulationDepth.setValue(p.reverb.GetModulationDepth());
@@ -122,6 +122,6 @@ void LateReverbEditor::resized()
         juce::FlexItem(modulationDepth).withMinWidth(120.0f).withMinHeight(90.0f)
     };
     flexbox.performLayout(getLocalBounds().getProportion(juce::Rectangle<float>(0, 0, 1, 0.8)).reduced(10));
-    impulseButton.setBounds(getLocalBounds().getProportion(juce::Rectangle<float>(0, 0.8, 0.5, 0.2)).reduced(10));
+    impulseButton.setBounds(getLocalBounds().getProportion(juce::Rectangle<float>(0, 0.8, 1, 0.2)).reduced(10));
 
 }
