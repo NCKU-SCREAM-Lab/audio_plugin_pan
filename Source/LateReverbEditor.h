@@ -49,7 +49,7 @@ public:
     void paint(juce::Graphics&) override;
     void resized() override;
 
-    RotarySlider channelSelector, dryWet;
+    RotarySlider  dryWet;
 
     RotarySlider roomSize, roomShape, decay, damping, modulationDepth;
 

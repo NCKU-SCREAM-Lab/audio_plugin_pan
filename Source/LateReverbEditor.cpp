@@ -34,19 +34,18 @@ void RotarySlider::resized() {
 
 //==============================================================================
 LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
-    : channelSelector("channel : -1"), dryWet(""), roomSize(""), roomShape( ""), decay( ""), damping( ""), modulationDepth(""),
+    :  dryWet(""), roomSize(""), roomShape( ""), decay( ""), damping( ""), modulationDepth(""),
     impulseButton("impulse"), audioProcessor(p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize(700, 300);
-    addAndMakeVisible(channelSelector);
 
 
     addAndMakeVisible(roomSize);
     roomSize.setRange(1, 5000);
     roomSize.onValueChange = [this, &p]() {
-        roomSize.nameLabel.setText("room size : " + juce::String(this->roomSize.getValue()), juce::NotificationType::dontSendNotification);
+        roomSize.nameLabel.setText("room size : " + juce::String(this->roomSize.getValue()/44100*340,2,false)+"m", juce::NotificationType::dontSendNotification);
         p.reverb.SetRoomSize(this->roomSize.getValue());
     };
     roomSize.setValue(p.reverb.GetRoomSize());
@@ -70,7 +69,7 @@ LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
     addAndMakeVisible(damping);
     damping.setRange(0, 10);
     damping.onValueChange = [this, &p]() {
-        damping.nameLabel.setText("damping : " + juce::String(exp(this->damping.getValue())), juce::NotificationType::dontSendNotification);
+        damping.nameLabel.setText("damping : " + juce::String(exp(this->damping.getValue()),0,false)+"Hz", juce::NotificationType::dontSendNotification);
         p.reverb.SetDamping(exp(this->damping.getValue()));
     };
     damping.setValue(log(p.reverb.GetDamping()));
@@ -113,7 +112,7 @@ void LateReverbEditor::resized()
     flexbox.flexWrap = juce::FlexBox::Wrap::wrap;
     flexbox.justifyContent = juce::FlexBox::JustifyContent::center;
     flexbox.alignContent = juce::FlexBox::AlignContent::center;
-    flexbox.items = { juce::FlexItem(channelSelector).withMinWidth(120.0f).withMinHeight(90.0f),
+    flexbox.items = {
         juce::FlexItem(dryWet).withMinWidth(120.0f).withMinHeight(90.0f),
         juce::FlexItem(roomSize).withMinWidth(120.0f).withMinHeight(90.0f),
         juce::FlexItem(roomShape).withMinWidth(120.0f).withMinHeight(90.0f),
