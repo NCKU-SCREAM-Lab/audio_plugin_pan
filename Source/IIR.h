@@ -358,7 +358,7 @@ namespace IIR {
 
 			delayFilters.update(feedBack);
 
-			dcBlocker.update(feedBack);
+			//dcBlocker.update(feedBack);
 
 			add(NCH,input, fbDelayLine.update(feedBack));
 
@@ -371,7 +371,7 @@ namespace IIR {
 
 			copy(NCH,feedBack, output);
 
-			return dcBlocker.update(add(inputDim,mult(inputDim,outDistrib*output,wetAmount), mult(inputDim, dry,dryAmount)));
+			return add(inputDim,mult(inputDim,outDistrib*output,wetAmount), mult(inputDim, dry,dryAmount));
 		}
 
 		int channel = -1;
