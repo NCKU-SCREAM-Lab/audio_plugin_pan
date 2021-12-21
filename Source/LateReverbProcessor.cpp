@@ -94,7 +94,7 @@ void LateReverbProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::M
     juce::dsp::AudioBlock<float> block(buffer);
     juce::dsp::ProcessContextReplacing<float> context(block);
     conv.process(context);
-
+    
     if (hasIrToLoad) {
         conv.reset();
         conv.loadImpulseResponse(IrToLoad,

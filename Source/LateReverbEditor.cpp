@@ -102,13 +102,14 @@ LateReverbEditor::~LateReverbEditor()
 
 std::unique_ptr<juce::FileChooser> fileChooser;
 void LateReverbEditor::ChooseFile() {
-    fileChooser = std::make_unique<FileChooser>("Please select the moose you want to load...",
+    fileChooser = std::make_unique<FileChooser>("Choose IR for convolutionnnnn",
         File::getSpecialLocation(File::userMusicDirectory),
         "*.wav"); 
     auto folderChooserFlags = FileBrowserComponent::canSelectFiles;
     fileChooser->launchAsync(folderChooserFlags, [this](const FileChooser& chooser)
     {
-        this->audioProcessor.LoadIR(chooser.getResult());
+        if(chooser.getResult().exists())
+            this->audioProcessor.LoadIR(chooser.getResult());
     });
     fileChooser.release();
 }

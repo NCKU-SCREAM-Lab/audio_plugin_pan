@@ -358,7 +358,7 @@ namespace IIR {
 
 			delayFilters.update(feedBack);
 
-			//dcBlocker.update(feedBack);
+			dcBlocker.update(feedBack);
 
 			add(NCH,input, fbDelayLine.update(feedBack));
 
