@@ -10,7 +10,7 @@
 
 #include "LateReverbEditor.h"
 //#include "PluginProcessor.h"
-
+using namespace juce;
 
 RotarySlider::RotarySlider(std::string varName) :nameLabel("nameLabel", varName) {
     setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
@@ -34,8 +34,8 @@ void RotarySlider::resized() {
 
 //==============================================================================
 LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
-    :  dryWet(""), roomSize(""), roomShape( ""), decay( ""), damping( ""), modulationDepth(""),
-    impulseButton("impulse"), audioProcessor(p)
+    : dryWet(""), roomSize(""), roomShape(""), decay(""), damping(""), modulationDepth(""),
+    impulseButton("impulse"), audioProcessor(p), chooseFileButton("choose IR file")
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -45,7 +45,7 @@ LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
     addAndMakeVisible(roomSize);
     roomSize.setRange(1, 5000);
     roomSize.onValueChange = [this, &p]() {
-        roomSize.nameLabel.setText("room size : " + juce::String(this->roomSize.getValue()/44100*340,2,false)+"m", juce::NotificationType::dontSendNotification);
+        roomSize.nameLabel.setText("room size : " + juce::String(this->roomSize.getValue() / 44100 * 340, 2, false) + "m", juce::NotificationType::dontSendNotification);
         p.reverb.SetRoomSize(this->roomSize.getValue());
     };
     roomSize.setValue(p.reverb.GetRoomSize());
@@ -69,7 +69,7 @@ LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
     addAndMakeVisible(damping);
     damping.setRange(0, 10);
     damping.onValueChange = [this, &p]() {
-        damping.nameLabel.setText("damping : " + juce::String(exp(this->damping.getValue()),0,false)+"Hz", juce::NotificationType::dontSendNotification);
+        damping.nameLabel.setText("damping : " + juce::String(exp(this->damping.getValue()), 0, false) + "Hz", juce::NotificationType::dontSendNotification);
         p.reverb.SetDamping(exp(this->damping.getValue()));
     };
     damping.setValue(log(p.reverb.GetDamping()));
@@ -93,10 +93,24 @@ LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
     addAndMakeVisible(dryWet);
     impulseButton.onClick = [&p]() {p.addInpulse(); };
 
+    addAndMakeVisible(chooseFileButton);
+    chooseFileButton.onClick = [this] { this->ChooseFile(); };
 }
-
 LateReverbEditor::~LateReverbEditor()
 {
+}
+
+std::unique_ptr<juce::FileChooser> fileChooser;
+void LateReverbEditor::ChooseFile() {
+    fileChooser = std::make_unique<FileChooser>("Please select the moose you want to load...",
+        File::getSpecialLocation(File::userMusicDirectory),
+        "*.wav"); 
+    auto folderChooserFlags = FileBrowserComponent::canSelectFiles;
+    fileChooser->launchAsync(folderChooserFlags, [this](const FileChooser& chooser)
+    {
+        this->audioProcessor.LoadIR(chooser.getResult());
+    });
+    fileChooser.release();
 }
 
 //==============================================================================
@@ -121,6 +135,6 @@ void LateReverbEditor::resized()
         juce::FlexItem(modulationDepth).withMinWidth(120.0f).withMinHeight(90.0f)
     };
     flexbox.performLayout(getLocalBounds().getProportion(juce::Rectangle<float>(0, 0, 1, 0.8)).reduced(10));
-    impulseButton.setBounds(getLocalBounds().getProportion(juce::Rectangle<float>(0, 0.8, 1, 0.2)).reduced(10));
-
+    impulseButton.setBounds(getLocalBounds().getProportion(juce::Rectangle<float>(0, 0.8, 0.5, 0.2)).reduced(10));
+    chooseFileButton.setBounds(getLocalBounds().getProportion(juce::Rectangle<float>(.5, 0.8, .5, 0.2)).reduced(10));
 }

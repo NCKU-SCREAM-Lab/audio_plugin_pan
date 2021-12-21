@@ -29,23 +29,21 @@ const juce::String LateReverbProcessor::getName() const
 //==============================================================================
 void LateReverbProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
+    convSpec.sampleRate = sampleRate;
+    convSpec.maximumBlockSize = samplesPerBlock;
+    convSpec.numChannels = getTotalNumOutputChannels();
+    conv.prepare(convSpec);
+    PrepareConv();
+}
 
-    /*
-    juce::dsp::ProcessSpec spec;
-    spec.sampleRate = sampleRate;
-    spec.maximumBlockSize = samplesPerBlock;
-    spec.numChannels = getTotalNumOutputChannels();
-
-    //auto buffer = chooseFile();
-
+void LateReverbProcessor::PrepareConv() {
     conv.reset();
+    //conv.prepare(convSpec);
+}
 
-
-    conv.loadImpulseResponse(juce::File::getSpecialLocation(juce::File::SpecialLocationType::userMusicDirectory).getChildFile("WIDE_HALL_trim.wav"),
-        juce::dsp::Convolution::Stereo::yes
-        , juce::dsp::Convolution::Trim::yes, 0);
-    conv.prepare(spec);
-    */
+void LateReverbProcessor::LoadIR(juce::File& file) {
+    IrToLoad = file;
+    hasIrToLoad = true;
 }
 
 void LateReverbProcessor::releaseResources()
@@ -92,8 +90,17 @@ void LateReverbProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::M
         }
         
     }
-    /*
+    
     juce::dsp::AudioBlock<float> block(buffer);
     juce::dsp::ProcessContextReplacing<float> context(block);
-    conv.process(context);*/
+    conv.process(context);
+
+    if (hasIrToLoad) {
+        conv.reset();
+        conv.loadImpulseResponse(IrToLoad,
+            juce::dsp::Convolution::Stereo::yes
+            , juce::dsp::Convolution::Trim::yes, 0);
+        hasIrToLoad = false;
+        PrepareConv();
+    }
 }

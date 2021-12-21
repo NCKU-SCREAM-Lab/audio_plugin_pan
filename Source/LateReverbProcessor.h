@@ -60,10 +60,14 @@ public:
         }
         return sourceBuffer;
     }
-
+    void LoadIR(juce::File& file);
 private:
-
+    bool hasIrToLoad = false;
+    juce::File IrToLoad;
+    void PrepareConv();
     int addInpulseNextSample = false;
+    juce::dsp::ProcessSpec convSpec;
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LateReverbProcessor)
 };

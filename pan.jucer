@@ -31,6 +31,10 @@
       <FILE id="J9InDs" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="FUrN60" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="tX2bdw" name="ConvolutionEditor.cpp" compile="1" resource="0"
+            file="Source/ConvolutionEditor.cpp"/>
+      <FILE id="MQM5YW" name="ConvolutionEditor.h" compile="0" resource="0"
+            file="Source/ConvolutionEditor.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
