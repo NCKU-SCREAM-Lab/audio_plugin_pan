@@ -60,7 +60,7 @@ public:
         }
         return sourceBuffer;
     }
-    void LoadIR(juce::File& file);
+    void LoadIR(const juce::File& file);
 private:
     bool hasIrToLoad = false;
     juce::File IrToLoad;

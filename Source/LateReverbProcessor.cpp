@@ -41,7 +41,7 @@ void LateReverbProcessor::PrepareConv() {
     //conv.prepare(convSpec);
 }
 
-void LateReverbProcessor::LoadIR(juce::File& file) {
+void LateReverbProcessor::LoadIR(const juce::File& file) {
     IrToLoad = file;
     hasIrToLoad = true;
 }
