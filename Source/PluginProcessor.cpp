@@ -14,20 +14,25 @@
 using AudioGraphIOProcessor = juce::AudioProcessorGraph::AudioGraphIOProcessor;
 
 //==============================================================================
+//PanAudioProcessor::PanAudioProcessor()
+//#ifndef JucePlugin_PreferredChannelConfigurations
+//     : AudioProcessor (BusesProperties()
+//                     #if ! JucePlugin_IsMidiEffect
+//                      #if ! JucePlugin_IsSynth
+//                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+//                      #endif
+//                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+//                     #endif
+//                       ),
+//#endif
+//       _mainProcessor(new juce::AudioProcessorGraph())
+//{
+//}
+
 PanAudioProcessor::PanAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       ),
-#endif
-    _mainProcessor(new juce::AudioProcessorGraph())
-{
-}
+    : MultiBusProcessor(MAX_SOURCE_NUM),
+      _mainProcessor(new juce::AudioProcessorGraph())
+{}
 
 PanProcessor* PanAudioProcessor::pan()
 {
@@ -108,7 +113,7 @@ void PanAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    _mainProcessor->setPlayConfigDetails(getMainBusNumInputChannels(),
+    _mainProcessor->setPlayConfigDetails(MAX_SOURCE_NUM,
                                          getMainBusNumOutputChannels(),
                                          sampleRate, samplesPerBlock);
     _mainProcessor->prepareToPlay(sampleRate, samplesPerBlock);
@@ -123,7 +128,7 @@ void PanAudioProcessor::initializeGraph()
     _audioOutputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::audioOutputNode));
     _midiInputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::midiInputNode));
     _midiOutputNode = _mainProcessor->addNode(std::make_unique<AudioGraphIOProcessor>(AudioGraphIOProcessor::midiOutputNode));
-    _panNode = _mainProcessor->addNode(std::make_unique<PanProcessor>());
+    _panNode = _mainProcessor->addNode(std::make_unique<PanProcessor>(MAX_SOURCE_NUM));
     _reverbNode = _mainProcessor->addNode(std::make_unique<LateReverbProcessor>());
     
     connectAudioNodes();
@@ -132,17 +137,19 @@ void PanAudioProcessor::initializeGraph()
 
 void PanAudioProcessor::connectAudioNodes()
 {
-    for (int channel = 0; channel < 2; ++channel) {
+    for (int channel = 0; channel < MAX_SOURCE_NUM; ++channel) {
         _mainProcessor->addConnection({
             {_audioInputNode->nodeID, channel},
             {_panNode->nodeID, channel}});
+    }
+    for (int channel = 0; channel < 2; ++channel) {
         _mainProcessor->addConnection({
             {_panNode->nodeID, channel},
             {_reverbNode->nodeID, channel}});
         _mainProcessor->addConnection({
             {_reverbNode->nodeID, channel},
             {_audioOutputNode->nodeID, channel}});
-    }
+    } 
 }
 
 void PanAudioProcessor::connectMidiNodes()
@@ -159,31 +166,31 @@ void PanAudioProcessor::releaseResources()
     _mainProcessor->releaseResources();
 }
 
-#ifndef JucePlugin_PreferredChannelConfigurations
-bool PanAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
-{
-  #if JucePlugin_IsMidiEffect
-    juce::ignoreUnused (layouts);
-    return true;
-  #else
-    // This is the place where you check if the layout is supported.
-    // In this template code we only support mono or stereo.
-    // Some plugin hosts, such as certain GarageBand versions, will only
-    // load plugins that support stereo bus layouts.
-    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
-        return false;
-
-    // This checks if the input layout matches the output layout
-   #if ! JucePlugin_IsSynth
-    if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
-        return false;
-   #endif
-
-    return true;
-  #endif
-}
-#endif
+//#ifndef JucePlugin_PreferredChannelConfigurations
+//bool PanAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+//{
+//  #if JucePlugin_IsMidiEffect
+//    juce::ignoreUnused (layouts);
+//    return true;
+//  #else
+//    // This is the place where you check if the layout is supported.
+//    // In this template code we only support mono or stereo.
+//    // Some plugin hosts, such as certain GarageBand versions, will only
+//    // load plugins that support stereo bus layouts.
+//    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
+//     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
+//        return false;
+//
+//    // This checks if the input layout matches the output layout
+//   #if ! JucePlugin_IsSynth
+//    if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
+//        return false;
+//   #endif
+//
+//    return true;
+//  #endif
+//}
+//#endif
 
 void PanAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
@@ -208,6 +215,7 @@ void PanAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
     // interleaved by keeping the same state.
     updateGraph();
     _mainProcessor->processBlock(buffer, midiMessages);
+    
 }
 
 void PanAudioProcessor::updateGraph()

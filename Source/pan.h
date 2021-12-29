@@ -16,7 +16,7 @@
 #include <memory>
 #include "hrir.h"
 
-#define OUTPUT_VOICE_NUM 2
+#define NUM_OUTPUT_CHANNEL 2
 
 namespace pan
 {

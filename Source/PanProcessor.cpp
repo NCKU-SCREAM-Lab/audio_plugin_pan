@@ -9,8 +9,8 @@
 #include "PanProcessor.h"
 
 //==============================================================================
-PanProcessor::PanProcessor()
-    : ProcessorBase(), _panner(MAX_SOURCE_NUM, 10, 10)
+PanProcessor::PanProcessor(int n_src)
+    : ProcessorBase(n_src), _panner(n_src, 10, 10)
 {
 }
 

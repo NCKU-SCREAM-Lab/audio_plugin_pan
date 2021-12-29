@@ -253,7 +253,7 @@ void Panner::processBlock(juce::AudioBuffer<float>& buffer)
     buffer_l.makeCopyOf(buffer);
     buffer_r.makeCopyOf(buffer);
     
-    for (int i=0; i<OUTPUT_VOICE_NUM; i++) {
+    for (int i=0; i<NUM_OUTPUT_CHANNEL; i++) {
         buffer.clear (i, 0, buffer.getNumSamples());
     }
     

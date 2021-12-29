@@ -12,13 +12,14 @@
 #include <memory>
 #include "PanProcessor.h"
 #include "LateReverbProcessor.h"
+#include "MultiBusProcessor.h"
 
-#define MAX_SOURCE_NUM 1
+#define MAX_SOURCE_NUM 4
 
 //==============================================================================
 /**
 */
-class PanAudioProcessor  : public juce::AudioProcessor
+class PanAudioProcessor  : public MultiBusProcessor
 {
 public:
     //==============================================================================
@@ -28,10 +29,6 @@ public:
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
-
-   #ifndef JucePlugin_PreferredChannelConfigurations
-    bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
-   #endif
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 

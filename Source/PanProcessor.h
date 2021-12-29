@@ -12,8 +12,6 @@
 #include "ProcessorBase.h"
 #include "pan.h"
 
-#define MAX_SOURCE_NUM 1
-
 //==============================================================================
 /**
 */
@@ -21,7 +19,7 @@ class PanProcessor : public ProcessorBase
 {
 public:
     //==============================================================================
-    PanProcessor();
+    PanProcessor(int n_src);
     ~PanProcessor() override;
 
     //==============================================================================

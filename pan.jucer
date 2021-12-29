@@ -5,25 +5,15 @@
   <MAINGROUP id="eVNIa4" name="pan">
     <GROUP id="{1898ABC0-52EE-CB55-7F91-06F2544753C7}" name="Source">
       <FILE id="fwMZU2" name="IIR.h" compile="0" resource="0" file="Source/IIR.h"/>
-      <FILE id="H5fopx" name="LateReverbEditor.cpp" compile="1" resource="0"
-            file="Source/LateReverbEditor.cpp"/>
-      <FILE id="h3kWR0" name="LateReverbEditor.h" compile="0" resource="0"
-            file="Source/LateReverbEditor.h"/>
-      <FILE id="FvPZTX" name="LateReverbProcessor.cpp" compile="1" resource="0"
-            file="Source/LateReverbProcessor.cpp"/>
-      <FILE id="AAXtDX" name="LateReverbProcessor.h" compile="0" resource="0"
-            file="Source/LateReverbProcessor.h"/>
       <FILE id="hf4VIZ" name="Matrix.cpp" compile="1" resource="0" file="Source/Matrix.cpp"/>
       <FILE id="RBospb" name="Matrix.h" compile="0" resource="0" file="Source/Matrix.h"/>
-      <FILE id="pYqdz6" name="PanProcessor.cpp" compile="1" resource="0"
-            file="Source/PanProcessor.cpp"/>
-      <FILE id="PIWc1r" name="PanProcessor.h" compile="0" resource="0" file="Source/PanProcessor.h"/>
-      <FILE id="b7AJY8" name="ProcessorBase.h" compile="0" resource="0" file="Source/ProcessorBase.h"/>
       <FILE id="K6Cu6O" name="hrir.h" compile="0" resource="0" file="Source/hrir.h"/>
       <FILE id="YnGS3y" name="hrir.cpp" compile="1" resource="0" file="Source/hrir.cpp"/>
       <FILE id="Ga4QjB" name="geometry.h" compile="0" resource="0" file="Source/geometry.h"/>
       <FILE id="mgpuez" name="pan.cpp" compile="1" resource="0" file="Source/pan.cpp"/>
       <FILE id="eBlrut" name="pan.h" compile="0" resource="0" file="Source/pan.h"/>
+      <FILE id="Zo0yTu" name="MultiBusProcessor.h" compile="0" resource="0"
+            file="Source/MultiBusProcessor.h"/>
       <FILE id="UGZ5Ta" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="pYVNUV" name="PluginProcessor.h" compile="0" resource="0"
@@ -35,6 +25,18 @@
             file="Source/ConvolutionEditor.cpp"/>
       <FILE id="MQM5YW" name="ConvolutionEditor.h" compile="0" resource="0"
             file="Source/ConvolutionEditor.h"/>
+      <FILE id="b7AJY8" name="ProcessorBase.h" compile="0" resource="0" file="Source/ProcessorBase.h"/>
+      <FILE id="pYqdz6" name="PanProcessor.cpp" compile="1" resource="0"
+            file="Source/PanProcessor.cpp"/>
+      <FILE id="PIWc1r" name="PanProcessor.h" compile="0" resource="0" file="Source/PanProcessor.h"/>
+      <FILE id="H5fopx" name="LateReverbEditor.cpp" compile="1" resource="0"
+            file="Source/LateReverbEditor.cpp"/>
+      <FILE id="h3kWR0" name="LateReverbEditor.h" compile="0" resource="0"
+            file="Source/LateReverbEditor.h"/>
+      <FILE id="FvPZTX" name="LateReverbProcessor.cpp" compile="1" resource="0"
+            file="Source/LateReverbProcessor.cpp"/>
+      <FILE id="AAXtDX" name="LateReverbProcessor.h" compile="0" resource="0"
+            file="Source/LateReverbProcessor.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

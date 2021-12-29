@@ -35,7 +35,7 @@ void RotarySlider::resized() {
 //==============================================================================
 LateReverbEditor::LateReverbEditor(LateReverbProcessor& p)
     : dryWet(""), roomSize(""), roomShape(""), decay(""), damping(""), modulationDepth(""),
-    impulseButton("impulse"), audioProcessor(p), chooseFileButton("choose IR file")
+    impulseButton("impulse"), chooseFileButton("choose IR file"), audioProcessor(p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.

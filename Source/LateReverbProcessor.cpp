@@ -11,7 +11,7 @@
 #include "LateReverbProcessor.h"
 
 LateReverbProcessor::LateReverbProcessor()
-    : ProcessorBase()
+    : ProcessorBase(-1)
     , allpass(new float[] {0.8, 0.8}, new float[] {1, 1})
 {
 }

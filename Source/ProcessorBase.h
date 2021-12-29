@@ -1,14 +1,14 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "MultiBusProcessor.h"
 
-class ProcessorBase  : public juce::AudioProcessor
+class ProcessorBase  : public MultiBusProcessor
 {
 public:
     //==============================================================================
-    ProcessorBase()
-        : AudioProcessor (BusesProperties().withInput ("Input", juce::AudioChannelSet::stereo())
-                                           .withOutput ("Output", juce::AudioChannelSet::stereo()))
+    ProcessorBase(int n_src)
+        : MultiBusProcessor(n_src)
     {}
 
     //==============================================================================
