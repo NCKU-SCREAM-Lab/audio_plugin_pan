@@ -271,7 +271,7 @@ void Panner::processBlock(juce::AudioBuffer<float>& buffer)
         buffer.addFrom(0, 0, buffer_l, voice->vid, 0, buffer.getNumSamples());
         buffer.addFrom(1, 0, buffer_r, voice->vid, 0, buffer.getNumSamples());
     }
-    buffer.applyGain(1/(float)room.voices.size());
+    //buffer.applyGain(1/(float)room.voices.size());
 }
 
 void Panner::processBlock(int voice, juce::dsp::AudioBlock<float> &block_l, juce::dsp::AudioBlock<float> &block_r)
