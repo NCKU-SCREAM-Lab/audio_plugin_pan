@@ -11,6 +11,8 @@
 #include "pan.h"
 #include "hrir.h"
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 #define PI 3.14159265
 
@@ -44,17 +46,17 @@ void RoomObject::mouseDrag (const juce::MouseEvent& event)
     setTopLeftPosition(_lastPos.x + event.getScreenX() - event.getMouseDownScreenX(),
                        _lastPos.y + event.getScreenY() - event.getMouseDownScreenY());
     _room.updatePosition(*this);
-    _panner.updateFilter();
+    //_panner.updateFilter();
 }
 
 void RoomObject::mouseUp (const juce::MouseEvent& event)
 {
-//    _panner.updateFilter();
+    _panner.updateFilter();
 }
 
 /*-----------------------Room------------------------*/
 Room::Room(Panner& p, int numVoice, float width, float height)
-    : _panner{p}, _obj_size{40}, _width{width}, _height(height)
+    : _panner{p}, _width{width}, _height(height), _obj_size{40}
 {
     head = std::make_unique<RoomObject>(_panner, *this, 0, 0, -1);
     head->setSize(_obj_size*2);
@@ -229,17 +231,119 @@ std::vector<float> Panner::getCoefficeints(float azimuth, float elevation, float
     return coef;
 }
 
+std::vector<geo::vec2> get_pseudo_voices_pos(geo::vec2 orig_voices_pos,
+                                             int num_layer,
+                                             float room_width,
+                                             float room_height,
+                                             float epsilon) {
+    srand((unsigned int)time(NULL));
+    
+    std::vector<std::vector<geo::vec2> > pseudo_voices_pos;
+    for (int i=0; i<2*num_layer+1; i++) {
+        pseudo_voices_pos.push_back(std::vector<geo::vec2>());
+        for (int j=0; j<2*num_layer+1; j++) {
+            pseudo_voices_pos[i].push_back(geo::vec2(999999, 999999));
+        }
+    }
+    
+    // centre room
+    pseudo_voices_pos[num_layer][num_layer] = orig_voices_pos;
+
+    
+    // upper room
+    for (int i=0; i<num_layer; i++) {
+        auto &vpos = pseudo_voices_pos[num_layer][num_layer+i];
+        geo::vec2 pseudo_vpos(vpos.x, vpos.y);
+        float reflect_y = room_height/2.0 + i*room_height;
+        pseudo_vpos.y = pseudo_vpos.y + 2*(reflect_y-pseudo_vpos.y);
+        pseudo_voices_pos[num_layer][num_layer+i+1] = pseudo_vpos;
+    }
+    
+    // lower room
+    for (int i=0; i<num_layer; i++) {
+        auto &vpos = pseudo_voices_pos[num_layer][num_layer-i];
+        geo::vec2 pseudo_vpos(vpos.x, vpos.y);
+        float reflect_y = -(room_height/2.0 + i*room_height);
+        pseudo_vpos.y = pseudo_vpos.y + 2*(reflect_y-pseudo_vpos.y);
+        pseudo_voices_pos[num_layer][num_layer-(i+1)] = pseudo_vpos;
+    }
+    
+    // right room
+    for (int i=0; i<num_layer; i++) {
+        for (int j=-num_layer; j<=num_layer; j++) {
+            auto &vpos = pseudo_voices_pos[num_layer+i][num_layer+j];
+            geo::vec2 pseudo_vpos(vpos.x, vpos.y);
+            float reflect_x = room_width/2.0 + i*room_width;
+            pseudo_vpos.x = pseudo_vpos.x + 2*(reflect_x-pseudo_vpos.x);
+            pseudo_voices_pos[num_layer+i+1][num_layer+j] = pseudo_vpos;
+        }
+    }
+    
+    // left room
+    for (int i=0; i<num_layer; i++) {
+        for (int j=-num_layer; j<=num_layer; j++) {
+            auto &vpos = pseudo_voices_pos[num_layer-i][num_layer+j];
+            geo::vec2 pseudo_vpos(vpos.x, vpos.y);
+            float reflect_x = -(room_width/2.0 + i*room_width);
+            pseudo_vpos.x = pseudo_vpos.x + 2*(reflect_x-pseudo_vpos.x);
+            pseudo_voices_pos[num_layer-(i+1)][num_layer+j] = pseudo_vpos;
+        }
+    }
+    
+    // add randon shift for pseudo rooms
+    for (int i=0; i<2*num_layer+1; i++) {
+        for (int j=0; j<2*num_layer+1; j++) {
+            if (i == num_layer && j == num_layer) {
+                continue;
+            }
+            pseudo_voices_pos[i][j].x += epsilon * rand() / (RAND_MAX + 1.0);
+            pseudo_voices_pos[i][j].y += epsilon * rand() / (RAND_MAX + 1.0);
+        }
+    }
+    
+    // return
+    std::vector<geo::vec2> tmp;
+    for (int i=0; i<2*num_layer+1; i++) {
+        for (int j=0; j<2*num_layer+1; j++) {
+            tmp.push_back(pseudo_voices_pos[i][j]);
+        }
+    }
+    return tmp;
+}
+
 void Panner::updateFilter()
 {
     _cs_filter.enter();
 
     _next_filter = 1 - _next_filter;
     auto &head = room.head;
+    
     for (auto &voice : room.voices) {
-        float azimuth = getAzimuth(voice->coord.x, voice->coord.y, head->coord.x, head->coord.y);
-        float dist_2 = (voice->coord.x - room.head->coord.x)*(voice->coord.x - room.head->coord.x) + (voice->coord.y - room.head->coord.y)*(voice->coord.y - room.head->coord.y);
-        auto coef_l = getCoefficeints(azimuth, 0, dist_2, hrir::coef_l);
-        auto coef_r = getCoefficeints(azimuth, 0, dist_2, hrir::coef_r);
+        auto pseudo_voices_pos = get_pseudo_voices_pos(geo::vec2(voice->coord.x, voice->coord.y),
+                                                       NUM_PSEUDO_LAYER,
+                                                       room._width,
+                                                       room._height,
+                                                       PSEUDO_SHIFT_EPSILON);
+        
+        std::vector<float> coef_l(HRIR_COEF_NUM, 0);
+        std::vector<float> coef_r(HRIR_COEF_NUM, 0);
+        for (auto &vpos : pseudo_voices_pos) {
+            float azimuth = getAzimuth(vpos.x, vpos.y, head->coord.x, head->coord.y);
+            float dist_2 = (vpos.x - room.head->coord.x)*(vpos.x - room.head->coord.x) + (vpos.y - room.head->coord.y)*(vpos.y - room.head->coord.y);
+            {
+                auto tmp = getCoefficeints(azimuth, 0, dist_2, hrir::coef_l);
+                for (int i=0; i<tmp.size(); i++) {
+                    coef_l[i] += tmp[i];
+                }
+            }
+            {
+                auto tmp = getCoefficeints(azimuth, 0, dist_2, hrir::coef_r);
+                for (int i=0; i<tmp.size(); i++) {
+                    coef_r[i] += tmp[i];
+                }
+            }
+        }
+        
         *(_hrir_filter_l[_next_filter][voice->vid].coefficients) = juce::dsp::FIR::Coefficients<float>(coef_l.data(), coef_l.size());
         *(_hrir_filter_r[_next_filter][voice->vid].coefficients) = juce::dsp::FIR::Coefficients<float>(coef_r.data(), coef_r.size());
     }

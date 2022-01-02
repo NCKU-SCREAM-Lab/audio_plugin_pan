@@ -17,6 +17,8 @@
 #include "hrir.h"
 
 #define NUM_OUTPUT_CHANNEL 2
+#define NUM_PSEUDO_LAYER 10
+#define PSEUDO_SHIFT_EPSILON 0.001
 
 namespace pan
 {
@@ -58,10 +60,10 @@ public:
 
     std::unique_ptr<RoomObject> head;
     std::vector<std::unique_ptr<RoomObject>> voices;
+    float _width, _height;
 private:
     Panner& _panner;
     int _obj_size;
-    float _width, _height;
     
     geo::vec2 getUiCoord(geo::vec2 &worldCoord);
     geo::vec2 getWordCoord(geo::vec2 &uiCoord);
